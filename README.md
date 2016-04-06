@@ -1,2 +1,2 @@
 # Tetris
-Tetris Online Hola
+Tetris Online
