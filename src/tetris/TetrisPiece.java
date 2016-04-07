@@ -7,13 +7,13 @@ import static java.util.Arrays.*;
 /**
  *
  * @author David
- *         Serg¡o
+ *         Sergio
  */
 public class TetrisPiece{
     int typePiece;
     /**
-    * 0=Cuadrado
-    * 1=Barra
+    * 0=Square
+    * 1=Bar
     * 2=L
     * 3=J
     * 4=T
@@ -25,9 +25,9 @@ public class TetrisPiece{
     int position;
     /**
      * 0=Horizontal -default-
-     * 1=90 grados
-     * 2=180 grados
-     * 3=270 grados
+     * 1=90 degree
+     * 2=180 degree
+     * 3=270 degree
      */
     int xOrigin,yOrigin;
     Rectangle[][] rectangles;
@@ -105,6 +105,10 @@ public class TetrisPiece{
         }
         
         rectangles=new Rectangle[dataMtrx.length][dataMtrx[0].length];
-        
+        for(int i=0; i!=dataMtrx.length;i++){
+            for(int j=0; j!=dataMtrx[0].length;j++){
+                rectangles[i][j].setBounds(0, 0, 0, 0);
+            }
+        }
     }
 }
