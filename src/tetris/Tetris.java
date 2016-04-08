@@ -1,6 +1,9 @@
 
 package tetris;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.TimerTask;
 import javax.swing.*;
 
 /**
@@ -8,23 +11,30 @@ import javax.swing.*;
  * @author David
  *         Sergio
  */
-public class Tetris extends JFrame{
+public class Tetris extends JFrame implements ActionListener{
     JMenuBar bar;
     JMenu menuGame;
     JMenuItem itemEnd,itemNewGame;
     
-    
-    TetrisField field;
-    
+    Timer time;
+    int level;
+    int ticks;
     final int winWidth=300, winHeight=600;
-    
+    TetrisField field;
+        
     public Tetris(){
         setResizable(true);
         setVisible(true);
         setBounds(0, 0, winWidth, winHeight);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         getContentPane().setLayout(null);
-       
+        
+        level=1;
+        
+        //Empieza el tiempo
+        ticks=0;
+        time=new Timer(100,this);
+        time.start();
         
         //Empieza el campo
         field=new TetrisField();
@@ -36,6 +46,8 @@ public class Tetris extends JFrame{
         menuGame=new JMenu("Game");
         bar.add(menuGame);
         
+        itemNewGame=new JMenuItem("New Game");
+        menuGame.add(itemNewGame);
         itemEnd=new JMenuItem("End");
         menuGame.add(itemEnd);
         
@@ -46,5 +58,14 @@ public class Tetris extends JFrame{
     public static void main(String[] args) {
         Tetris tetris=new Tetris();
     }
-    
+
+    @Override
+    public void actionPerformed(ActionEvent ae) {
+        System.out.println("Update!"+ticks);
+        ticks++;
+        if(ticks>=10/level){
+            field.update();
+            ticks=0;
+        }
+    }
 }

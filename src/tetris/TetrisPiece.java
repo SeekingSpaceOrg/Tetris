@@ -3,6 +3,8 @@ package tetris;
 
 import java.awt.*;
 import static java.util.Arrays.*;
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
 
 /**
  *
@@ -22,7 +24,7 @@ public class TetrisPiece{
     */
     Color color;
     int[][] dataMtrx;
-    int position;
+    int orientation;
     /**
      * 0=Horizontal -default-
      * 1=90 degree
@@ -30,25 +32,33 @@ public class TetrisPiece{
      * 3=270 degree
      */
     int xOrigin,yOrigin;
-    Rectangle[][] rectangles;
+    JPanel[][] rectangles;
+    int scale;
     
     
-    public TetrisPiece(int typePiece){
+    public TetrisPiece(int typePiece, TetrisField field){
         this.typePiece=typePiece;
         xOrigin=4;
         yOrigin=0;
-        position=0;
+        orientation=0;
+        scale=field.scale;
         
         switch(this.typePiece){
             case 0:
                 dataMtrx=new int[2][2];
-                fill(dataMtrx,1);
+                dataMtrx[0][0]=1;
+                dataMtrx[0][1]=1;
+                dataMtrx[1][0]=1;
+                dataMtrx[1][1]=1;
                 color=Color.decode("#E8EB3C");
                 break;
                 
             case 1:
                 dataMtrx=new int[4][1];
-                fill(dataMtrx,1);
+                dataMtrx[0][0]=1;
+                dataMtrx[1][0]=1;
+                dataMtrx[2][0]=1;
+                dataMtrx[3][0]=1;
                 color=Color.decode("#E8EB3C");
                 break;
             
@@ -103,12 +113,34 @@ public class TetrisPiece{
                 color=Color.decode("#ffffff");
                 break;
         }
-        
-        rectangles=new Rectangle[dataMtrx.length][dataMtrx[0].length];
+        rectangles=new JPanel[dataMtrx.length][dataMtrx[0].length];
         for(int i=0; i!=dataMtrx.length;i++){
             for(int j=0; j!=dataMtrx[0].length;j++){
-                rectangles[i][j].setBounds(0, 0, 0, 0);
+                rectangles[i][j]=new JPanel(null);
             }
         }
+        update();
+        for(int i=0; i!=dataMtrx.length;i++){
+            for(int j=0; j!=dataMtrx[0].length;j++){
+                rectangles[i][j].setBackground(color);
+                rectangles[i][j].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                field.add(rectangles[i][j]);
+            }
+        } 
+    }
+
+    public void update() {
+        for(int i=0; i!=dataMtrx.length;i++){
+            for(int j=0; j!=dataMtrx[0].length;j++){
+                if(dataMtrx[i][j]==1){
+                    rectangles[i][j].setBounds(scale*(xOrigin+i),scale*(yOrigin+j),scale,scale);
+                }
+            }
+        }
+    }
+    
+    public void fall(){
+        yOrigin++;
+        update();
     }
 }
