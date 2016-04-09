@@ -32,8 +32,6 @@ public class TetrisPiece{
      * 3=270 degree
      */
     int xOrigin,yOrigin;
-    JPanel[][] rectangles;
-    int scale;
     
     
     public TetrisPiece(int typePiece, TetrisField field){
@@ -41,7 +39,6 @@ public class TetrisPiece{
         xOrigin=4;
         yOrigin=0;
         orientation=0;
-        scale=field.scale;
         
         switch(this.typePiece){
             case 0:
@@ -113,34 +110,77 @@ public class TetrisPiece{
                 color=Color.decode("#ffffff");
                 break;
         }
-        rectangles=new JPanel[dataMtrx.length][dataMtrx[0].length];
-        for(int i=0; i!=dataMtrx.length;i++){
-            for(int j=0; j!=dataMtrx[0].length;j++){
-                rectangles[i][j]=new JPanel(null);
-            }
-        }
-        update();
-        for(int i=0; i!=dataMtrx.length;i++){
+        /*for(int i=0; i!=dataMtrx.length;i++){
             for(int j=0; j!=dataMtrx[0].length;j++){
                 rectangles[i][j].setBackground(color);
                 rectangles[i][j].setBorder(BorderFactory.createLineBorder(Color.BLACK));
                 field.add(rectangles[i][j]);
             }
-        } 
-    }
-
-    public void update() {
-        for(int i=0; i!=dataMtrx.length;i++){
-            for(int j=0; j!=dataMtrx[0].length;j++){
-                if(dataMtrx[i][j]==1){
-                    rectangles[i][j].setBounds(scale*(xOrigin+i),scale*(yOrigin+j),scale,scale);
-                }
-            }
-        }
+        }*/
     }
     
     public void fall(){
         yOrigin++;
-        update();
     }
+    
+    public void right(){
+        xOrigin++;
+    }
+    public void left(){
+        xOrigin--;
+    }
+    public void throwPiece(){
+        System.out.println("Aventar ^-^");
+    }
+    public void rotate(){
+        int orientation=this.orientation;
+        switch(this.typePiece){
+            case 0:
+                orientation++;
+                break;
+                
+            case 1:
+                if(orientation==0||orientation==2){
+                    System.out.println("Rotar :D");
+                    dataMtrx=new int[1][4];
+                    dataMtrx[0][0]=1;
+                    dataMtrx[0][1]=1;
+                    dataMtrx[0][2]=1;
+                    dataMtrx[0][3]=1;
+                }else{
+                    dataMtrx=new int[4][1];
+                    dataMtrx[0][0]=1;
+                    dataMtrx[1][0]=1;
+                    dataMtrx[2][0]=1;
+                    dataMtrx[3][0]=1;
+                }
+                orientation++;
+                break;
+            
+            case 2:
+                
+                break;
+            
+            case 3:
+                
+                break;
+            
+            case 4:
+                
+                break;
+            
+            case 5:
+                
+                break;
+            
+            case 6:
+                
+                break;
+            
+            default:
+                System.out.println("Error");
+                break;
+        }
+    }
+
 }

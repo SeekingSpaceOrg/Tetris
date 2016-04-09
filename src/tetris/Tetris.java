@@ -3,7 +3,8 @@ package tetris;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.TimerTask;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import javax.swing.*;
 
 /**
@@ -11,7 +12,7 @@ import javax.swing.*;
  * @author David
  *         Sergio
  */
-public class Tetris extends JFrame implements ActionListener{
+public class Tetris extends JFrame implements KeyListener,ActionListener{
     JMenuBar bar;
     JMenu menuGame;
     JMenuItem itemEnd,itemNewGame;
@@ -28,7 +29,8 @@ public class Tetris extends JFrame implements ActionListener{
         setBounds(0, 0, winWidth, winHeight);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         getContentPane().setLayout(null);
-        
+        addKeyListener(this);
+                
         level=1;
         
         //Empieza el tiempo
@@ -61,11 +63,44 @@ public class Tetris extends JFrame implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-        System.out.println("Update!"+ticks);
         ticks++;
         if(ticks>=10/level){
-            field.update();
+            //field.updateFall();
             ticks=0;
         }
+    }
+
+        @Override
+    public void keyTyped(KeyEvent ke) {
+        System.out.println("Deloyed");
+        System.out.println(ke.getKeyChar());
+        switch(ke.getKeyChar()){
+            case 'w':
+                field.getTypo('W');
+                break;
+            case 'a':
+                field.getTypo('A');
+                break;
+            case 's':
+                field.getTypo('S');
+                break;
+            case 'd':
+                field.getTypo('D');
+                break;
+            case ' ':
+                field.getTypo('S');
+                break;
+            default:
+                System.out.println("Otra tecla fue apretada");
+                break;
+        }
+    }
+
+    @Override
+    public void keyPressed(KeyEvent ke) {
+    }
+
+    @Override
+    public void keyReleased(KeyEvent ke) {
     }
 }
