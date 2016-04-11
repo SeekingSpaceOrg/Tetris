@@ -1,6 +1,7 @@
 
 package tetris;
 
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -13,9 +14,9 @@ import javax.swing.*;
  *         Sergio
  */
 public class Tetris extends JFrame implements KeyListener,ActionListener{
-    JMenuBar bar;
+    
     JMenu menuGame;
-    JMenuItem itemEnd,itemNewGame;
+   
     
     Timer time;
     int level;
@@ -24,11 +25,13 @@ public class Tetris extends JFrame implements KeyListener,ActionListener{
     TetrisField field;
         
     public Tetris(){
+        JMenuBar bar;
+        JMenuItem itemEnd,itemNewGame;
+        Container contentPane = getContentPane();
         setResizable(true);
-        setVisible(true);
         setBounds(0, 0, winWidth, winHeight);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        getContentPane().setLayout(null);
+        contentPane.setLayout(null);
         addKeyListener(this);
                 
         level=1;
@@ -40,7 +43,7 @@ public class Tetris extends JFrame implements KeyListener,ActionListener{
         
         //Empieza el campo
         field=new TetrisField();
-        getContentPane().add(field);
+        contentPane.add(field);
         
         //Barra de Menus
         bar=new JMenuBar();
@@ -52,13 +55,12 @@ public class Tetris extends JFrame implements KeyListener,ActionListener{
         menuGame.add(itemNewGame);
         itemEnd=new JMenuItem("End");
         menuGame.add(itemEnd);
-        
-        getContentPane().add(bar);
         setJMenuBar(bar);
     }
     
     public static void main(String[] args) {
         Tetris tetris=new Tetris();
+        tetris.setVisible(true);
     }
 
     @Override
