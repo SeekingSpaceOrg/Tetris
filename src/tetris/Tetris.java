@@ -16,7 +16,9 @@ import javax.swing.*;
 public class Tetris extends JFrame implements KeyListener,ActionListener{
     
     JMenu menuGame;
-   
+    JMenuBar bar;
+    JMenuItem itemEnd,itemNewGame;
+    Container contentPane;
     
     Timer time;
     int level;
@@ -25,9 +27,7 @@ public class Tetris extends JFrame implements KeyListener,ActionListener{
     TetrisField field;
         
     public Tetris(){
-        JMenuBar bar;
-        JMenuItem itemEnd,itemNewGame;
-        Container contentPane = getContentPane();
+        contentPane = getContentPane();
         setResizable(true);
         setBounds(0, 0, winWidth, winHeight);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -39,7 +39,6 @@ public class Tetris extends JFrame implements KeyListener,ActionListener{
         //Empieza el tiempo
         ticks=0;
         time=new Timer(100,this);
-        time.start();
         
         //Empieza el campo
         field=new TetrisField();
@@ -56,6 +55,8 @@ public class Tetris extends JFrame implements KeyListener,ActionListener{
         itemEnd=new JMenuItem("End");
         menuGame.add(itemEnd);
         setJMenuBar(bar);
+        
+        time.start();
     }
     
     public static void main(String[] args) {
@@ -66,6 +67,7 @@ public class Tetris extends JFrame implements KeyListener,ActionListener{
     @Override
     public void actionPerformed(ActionEvent ae) {
         ticks++;
+        field.update();
         if(ticks>=10/level){
             //field.updateFall();
             ticks=0;

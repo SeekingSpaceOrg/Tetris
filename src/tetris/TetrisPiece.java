@@ -111,13 +111,6 @@ public class TetrisPiece{
                 color=Color.decode("#ffffff");
                 break;
         }
-        /*for(int i=0; i!=dataMtrx.length;i++){
-            for(int j=0; j!=dataMtrx[0].length;j++){
-                rectangles[i][j].setBackground(color);
-                rectangles[i][j].setBorder(BorderFactory.createLineBorder(Color.BLACK));
-                field.add(rectangles[i][j]);
-            }
-        }*/
     }
     
     public void fall(){
