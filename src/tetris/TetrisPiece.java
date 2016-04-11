@@ -11,6 +11,7 @@ import javax.swing.JPanel;
  * @author David
  *         Sergio
  */
+
 public class TetrisPiece{
     int typePiece;
     /**
@@ -20,8 +21,8 @@ public class TetrisPiece{
     * 3=J
     * 4=T
     * 5=S
-    * 6=Z
-    */
+    * 6=Z*/
+    
     Color color;
     int[][] dataMtrx;
     int orientation;
@@ -29,8 +30,8 @@ public class TetrisPiece{
      * 0=Horizontal -default-
      * 1=90 degree
      * 2=180 degree
-     * 3=270 degree
-     */
+     * 3=270 degree*/
+     
     int xOrigin,yOrigin;
     
     
@@ -184,3 +185,4 @@ public class TetrisPiece{
     }
 
 }
+

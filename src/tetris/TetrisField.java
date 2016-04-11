@@ -41,6 +41,7 @@ public class TetrisField extends JPanel{
         }
         for(int i=0;i!=w;i++)for(int j=0;j!=h-2;j++)tetrisMarixColor[i][j]=Color.decode("#000000");
         
+        System.out.println(tetrisMatrixInt);
         actualPiece=new TetrisPiece(1,this);
         actualPiece.xOrigin=4;
         actualPiece.yOrigin=4;
