@@ -69,14 +69,13 @@ public class Tetris extends JFrame implements KeyListener,ActionListener{
         ticks++;
         field.update();
         if(ticks>=10/level){
-            //field.updateFall();
+            field.gameTick();
             ticks=0;
         }
     }
 
         @Override
     public void keyTyped(KeyEvent ke) {
-        System.out.println("Deloyed");
         System.out.println(ke.getKeyChar());
         switch(ke.getKeyChar()){
             case 'w':
@@ -92,7 +91,7 @@ public class Tetris extends JFrame implements KeyListener,ActionListener{
                 field.getTypo('D');
                 break;
             case ' ':
-                field.getTypo('S');
+                field.getTypo(' ');
                 break;
             default:
                 System.out.println("Otra tecla fue apretada");

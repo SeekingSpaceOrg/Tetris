@@ -2,9 +2,6 @@
 package tetris;
 
 import java.awt.*;
-import static java.util.Arrays.*;
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
 
 /**
  *
@@ -48,7 +45,7 @@ public class TetrisPiece{
                 dataMtrx[0][1]=1;
                 dataMtrx[1][0]=1;
                 dataMtrx[1][1]=1;
-                color=Color.decode("#E8EB3C");
+                color=Color.decode("#FFFF00");
                 break;
                 
             case 1:
@@ -57,7 +54,7 @@ public class TetrisPiece{
                 dataMtrx[1][0]=1;
                 dataMtrx[2][0]=1;
                 dataMtrx[3][0]=1;
-                color=Color.decode("#E8EB3C");
+                color=Color.decode("#00FFFF");
                 break;
             
             case 2:
@@ -66,7 +63,7 @@ public class TetrisPiece{
                 dataMtrx[1][1]=1;
                 dataMtrx[2][1]=1;
                 dataMtrx[2][0]=1;
-                color=Color.decode("#E8EB3C");
+                color=Color.decode("#FF9F00");
                 break;
             
             case 3:
@@ -75,7 +72,7 @@ public class TetrisPiece{
                 dataMtrx[1][0]=1;
                 dataMtrx[2][1]=1;
                 dataMtrx[2][0]=1;
-                color=Color.decode("#E8EB3C");
+                color=Color.decode("#0000FF");
                 break;
             
             case 4:
@@ -84,7 +81,7 @@ public class TetrisPiece{
                 dataMtrx[1][0]=1;
                 dataMtrx[2][0]=1;
                 dataMtrx[1][1]=1;
-                color=Color.decode("#E8EB3C");
+                color=Color.decode("#CF00DF");
                 break;
             
             case 5:
@@ -93,7 +90,7 @@ public class TetrisPiece{
                 dataMtrx[1][1]=1;
                 dataMtrx[1][0]=1;
                 dataMtrx[2][0]=1;
-                color=Color.decode("#E8EB3C");
+                color=Color.decode("#00FF00");
                 break;
             
             case 6:
@@ -102,7 +99,7 @@ public class TetrisPiece{
                 dataMtrx[1][0]=1;
                 dataMtrx[1][1]=1;
                 dataMtrx[2][1]=1;
-                color=Color.decode("#E8EB3C");
+                color=Color.decode("#FF0000");
                 break;
             
             default:
@@ -125,56 +122,21 @@ public class TetrisPiece{
     }
     public void throwPiece(){
         System.out.println("Aventar ^-^");
+        yOrigin++;
     }
     public void rotate(){
-        int orientation=this.orientation;
-        switch(this.typePiece){
-            case 0:
-                orientation++;
-                break;
-                
-            case 1:
-                if(orientation==0||orientation==2){
-                    System.out.println("Rotar :D");
-                    dataMtrx=new int[1][4];
-                    dataMtrx[0][0]=1;
-                    dataMtrx[0][1]=1;
-                    dataMtrx[0][2]=1;
-                    dataMtrx[0][3]=1;
-                }else{
-                    dataMtrx=new int[4][1];
-                    dataMtrx[0][0]=1;
-                    dataMtrx[1][0]=1;
-                    dataMtrx[2][0]=1;
-                    dataMtrx[3][0]=1;
-                }
-                orientation++;
-                break;
-            
-            case 2:
-                
-                break;
-            
-            case 3:
-                
-                break;
-            
-            case 4:
-                
-                break;
-            
-            case 5:
-                
-                break;
-            
-            case 6:
-                
-                break;
-            
-            default:
-                System.out.println("Error");
-                break;
+        dataMtrx=generateRotatedDataMtrx();
+        this.orientation++;
+    }
+    
+    public int[][] generateRotatedDataMtrx(){
+        int[][] newDataMtrx=new int[dataMtrx[0].length][dataMtrx.length];
+        for (int i = 0; i < dataMtrx.length; i++) {
+            for (int j = 0; j < dataMtrx[0].length; j++) {
+                newDataMtrx[j][i]=dataMtrx[i][dataMtrx[0].length-1-j];
+            }
         }
+        return newDataMtrx;
     }
 
 }

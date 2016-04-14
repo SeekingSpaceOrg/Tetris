@@ -24,31 +24,33 @@ public class TetrisField extends JPanel{
         h=22;
         //Campo Obscuro
         setLayout(null);
-        setBounds(1, 2, w*scale, h*scale);
-        setBackground(Color.decode("#0000000"));
+        setBounds(1, 2, w*scale, (h-2)*scale);
+        setBackground(Color.decode("#FF0000"));
         
         //Matriz interna
         tetrisMatrixInt=new int[10][22];
         tetrisMatrixPanel=new JPanel[10][20];
-        tetrisMatrixColor=new Color[10][20];
+        tetrisMatrixColor=new Color[10][22];
         canPlace=true;
         for(int i=0;i!=w;i++)for(int j=0;j!=h;j++)tetrisMatrixInt[i][j]=0;
-        for(int i=0;i!=w;i++)for(int j=0;j!=h-2;j++){
-            tetrisMatrixPanel[i][j]=new JPanel(null);
-            tetrisMatrixPanel[i][j].setBounds(scale*tetrisMatrixInt[i][j],scale*(tetrisMatrixInt[i][j]-2),scale,scale);
-            tetrisMatrixPanel[i][j].setBorder(BorderFactory.createLineBorder(Color.decode("#000000")));
-            this.add(tetrisMatrixPanel[i][j]);
+        for(int i=0;i!=w;i++)for(int j=2;j!=h;j++){
+            tetrisMatrixPanel[i][j-2]=new JPanel(null);
+            tetrisMatrixPanel[i][j-2].setBounds(scale*i,scale*(j-2),scale,scale);
+            tetrisMatrixPanel[i][j-2].setBorder(BorderFactory.createLineBorder(Color.decode("#000000")));
+            this.add(tetrisMatrixPanel[i][j-2]);
         }
-        for(int i=0;i!=w;i++)for(int j=0;j!=h-2;j++)tetrisMatrixColor[i][j]=Color.decode("#000000");
+        for(int i=0;i!=w;i++)for(int j=0;j!=h;j++)tetrisMatrixColor[i][j]=Color.decode("#000000");
         
         newPiece();
     }
     
     private void newPiece() {
-        System.out.println(tetrisMatrixInt);
         actualPiece=new TetrisPiece((int) Math.rint(Math.random()*7),this);
-        actualPiece.xOrigin=4;
-        actualPiece.yOrigin=4;
+        //actualPiece=new TetrisPiece(2,this);
+        System.out.println(actualPiece.typePiece);
+        System.out.println(actualPiece.color);
+        //actualPiece.xOrigin=5;
+        //actualPiece.yOrigin=5;
         updatePieceData();
     }
     
@@ -71,32 +73,51 @@ public class TetrisField extends JPanel{
     }
     
     public void update() {
-        for(int i=0; i!=tetrisMatrixInt.length;i++){
-            for(int j=0; j!=tetrisMatrixInt[0].length;j++){
+        for(int i=0; i<tetrisMatrixInt.length;i++){
+            for(int j=2; j<tetrisMatrixInt[0].length;j++){
                 if(tetrisMatrixInt[i][j]==1){
-                    tetrisMatrixPanel[i][j].setBackground(tetrisMatrixColor[i][j]);
+                    tetrisMatrixPanel[i][j-2].setBackground(tetrisMatrixColor[i][j]);
                 }else if(tetrisMatrixInt[i][j]==0){
-                    tetrisMatrixPanel[i][j].setBackground(Color.decode("#000000"));
+                    tetrisMatrixPanel[i][j-2].setBackground(Color.decode("#000000"));
                 }else{
-                    System.out.println("Error en UPDATE");;
+                    System.out.println("Error en UPDATE");
                 }
             }
         }
     }
     
+    public void gameTick(){
+        deletePieceData();
+        actualPiece.fall();
+        updatePieceData();
+    }
+            
     public void getTypo(char wasd){
         switch(wasd){
             case 'W':
+                deletePieceData();
                 actualPiece.rotate();
+                updatePieceData();
                 break;
             case 'A':
+                deletePieceData();
                 actualPiece.left();
+                updatePieceData();
                 break;
             case 'S':
-                actualPiece.throwPiece();
+                deletePieceData();
+                actualPiece.fall();
+                updatePieceData();
                 break;
             case 'D':
+                deletePieceData();
                 actualPiece.right();
+                updatePieceData();
+                break;
+            case ' ':
+                deletePieceData();
+                actualPiece.throwPiece();
+                updatePieceData();
                 break;
             default:
                 System.out.println("Otra tecla fue apretada");
