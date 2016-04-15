@@ -19,7 +19,6 @@ public class TetrisPiece{
     * 4=T
     * 5=S
     * 6=Z*/
-    
     Color color;
     int[][] dataMtrx;
     int orientation;
@@ -32,7 +31,7 @@ public class TetrisPiece{
     int xOrigin,yOrigin;
     
     
-    public TetrisPiece(int typePiece, TetrisField field){
+    public TetrisPiece(int typePiece){
         this.typePiece=typePiece;
         xOrigin=4;
         yOrigin=0;

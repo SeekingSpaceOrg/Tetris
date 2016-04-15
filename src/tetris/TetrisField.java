@@ -10,49 +10,53 @@ import javax.swing.*;
  */
 public class TetrisField extends JPanel{
     
-    int tetrisMatrixInt[][];
+    int tetrisMatrixInt[][],w,h,scale,nextPieceType;
     JPanel tetrisMatrixPanel[][];
-    Color tetrisMatrixColor[][];
+    Color tetrisMatrixColor[][],defaultColor;
     boolean canPlace;
-    int w,h,scale,nextPieceType;//Matrix Dimensions
+    Tetris parent;
     TetrisPiece actualPiece;
+    TetrisStats stats;
         
     public TetrisField(){
-        scale=20;
+        scale=30;
         w=10;
         h=22;
+        defaultColor=Color.decode("#000000");
         //Campo Obscuro
         setLayout(null);
         setBounds(1, 2, w*scale, (h-2)*scale);
-        setBackground(Color.decode("#FFFFFF"));
+        setBackground(Color.decode("#0F0F0F"));
         
         //Matriz interna
         tetrisMatrixInt=new int[10][22];
         tetrisMatrixPanel=new JPanel[10][20];
         tetrisMatrixColor=new Color[10][22];
-        canPlace=true;
         for(int i=0;i!=w;i++)for(int j=0;j!=h;j++)tetrisMatrixInt[i][j]=0;
         for(int i=0;i!=w;i++)for(int j=2;j!=h;j++){
             tetrisMatrixPanel[i][j-2]=new JPanel(null);
             tetrisMatrixPanel[i][j-2].setBounds(scale*i,scale*(j-2),scale,scale);
-            tetrisMatrixPanel[i][j-2].setBorder(BorderFactory.createLineBorder(Color.decode("#000000")));
+            tetrisMatrixPanel[i][j-2].setBorder(BorderFactory.createLineBorder(defaultColor));
             this.add(tetrisMatrixPanel[i][j-2]);
         }
-        for(int i=0;i!=w;i++)for(int j=0;j!=h;j++)tetrisMatrixColor[i][j]=Color.decode("#000000");
+        
+        //Stats
+        stats=new TetrisStats();
         
         newPiece();
     }
     
     private void newPiece() {
-        actualPiece=new TetrisPiece((int) Math.rint(Math.random()*7),this);
+        actualPiece=new TetrisPiece((int) Math.rint(Math.random()*7));
         //actualPiece=new TetrisPiece(2,this);
         //System.out.println(actualPiece.typePiece);
         //System.out.println(actualPiece.color);
         nextPieceType=(int) Math.rint(Math.random()*7);
         updatePieceData();
+        stats.update(nextPieceType);
     }
     private void newPiece(int type) {
-        actualPiece=new TetrisPiece(type,this);
+        actualPiece=new TetrisPiece(type);
         nextPieceType=(int) Math.rint(Math.random()*7);
         updatePieceData();
     }
@@ -62,7 +66,7 @@ public class TetrisField extends JPanel{
             for (int j = 0; j < actualPiece.dataMtrx[0].length; j++) {
                 if(actualPiece.dataMtrx[i][j]==1){
                     tetrisMatrixInt[actualPiece.xOrigin+i][actualPiece.yOrigin+j]=0;
-                    tetrisMatrixColor[actualPiece.xOrigin+i][actualPiece.yOrigin+j]=Color.decode("#000000");
+                    tetrisMatrixColor[actualPiece.xOrigin+i][actualPiece.yOrigin+j]=defaultColor;
                 }
             }    
         }
@@ -84,7 +88,8 @@ public class TetrisField extends JPanel{
                 if(tetrisMatrixInt[i][j]==1){
                     tetrisMatrixPanel[i][j-2].setBackground(tetrisMatrixColor[i][j]);
                 }else if(tetrisMatrixInt[i][j]==0){
-                    tetrisMatrixPanel[i][j-2].setBackground(Color.decode("#000000"));
+                    if(tetrisMatrixPanel[i][j-2].getBackground()!=defaultColor)
+                        tetrisMatrixPanel[i][j-2].setBackground(defaultColor);
                 }else{
                     System.out.println("Error en UPDATE");
                 }
@@ -98,7 +103,7 @@ public class TetrisField extends JPanel{
             actualPiece.fall();
             updatePieceData();
         }else{
-            //System.out.println("GAMETICK COLLISION");
+            if(checkGameOver())parent.gameOver();
             collision();
         }
     }
@@ -107,7 +112,7 @@ public class TetrisField extends JPanel{
         switch(wasd){
             case 'W':
                 deletePieceData();
-                actualPiece.rotate();
+                if(canRotate())actualPiece.rotate();
                 updatePieceData();
                 break;
             case 'A':
@@ -175,12 +180,25 @@ public class TetrisField extends JPanel{
         }
         return result;
     }
+    private boolean canRotate(){
+        int[][] possibleRotation=actualPiece.generateRotatedDataMtrx();
+        boolean result=true;
+        for (int i = 0; i < possibleRotation.length; i++) {
+            for (int j = 0; j < possibleRotation[0].length; j++) {
+                int x=actualPiece.xOrigin+i;
+                int y=actualPiece.yOrigin+j;
+                if(x>=tetrisMatrixInt.length)result=false;
+                else if(y>=tetrisMatrixInt[0].length)result=false;
+                else if(tetrisMatrixInt[x][y]+possibleRotation[i][j]==2)result=false;
+            }
+        }
+        return result;
+    }
     
     private void collision(){
         updatePieceData();
         //printMtrx();
         actualPiece=null;
-        
         int count=0;
         for (int i = 0;  i < tetrisMatrixInt[0].length; i++) {
             for (int j = 0; j < tetrisMatrixInt.length; j++) {
@@ -190,17 +208,26 @@ public class TetrisField extends JPanel{
             if(count==tetrisMatrixInt.length)deleteLine(i);
             count=0;
         }
-        newPiece();
+        newPiece(nextPieceType);
+        stats.update(nextPieceType);
+    }
+    
+    public boolean checkGameOver(){
+        return actualPiece.yOrigin<=1;
     }
     
     private void deleteLine(int line){
-        System.out.println("Deleting line"+line);
+        System.out.println("Línea "+line);
+        stats.upLevelCounter();
+        stats.score+=stats.level*10;
         while (line!=1) {
             for (int k = 0; k < tetrisMatrixInt.length; k++) {
                 tetrisMatrixInt[k][line]=tetrisMatrixInt[k][line-1];
+                tetrisMatrixColor[k][line]=tetrisMatrixColor[k][line-1];
             }
             line--;
         }
         for (int i = 0; i < tetrisMatrixInt.length; i++) {tetrisMatrixInt[i][0]=0;}
+        for (int i = 0; i < tetrisMatrixInt.length; i++) {tetrisMatrixColor[i][0]=defaultColor;}
     }
 }

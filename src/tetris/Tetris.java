@@ -2,10 +2,7 @@
 package tetris;
 
 import java.awt.Container;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import javax.swing.*;
 
 /**
@@ -13,6 +10,7 @@ import javax.swing.*;
  * @author David
  *         Sergio
  */
+
 public class Tetris extends JFrame implements KeyListener,ActionListener{
     
     JMenu menuGame;
@@ -21,28 +19,30 @@ public class Tetris extends JFrame implements KeyListener,ActionListener{
     Container contentPane;
     
     Timer time;
-    int level;
+    boolean isPaused;
     int ticks;
-    final int winWidth=300, winHeight=600;
+    final int winWidth=395, winHeight=652;
     TetrisField field;
         
     public Tetris(){
         contentPane = getContentPane();
-        setResizable(true);
+        setResizable(false);
         setBounds(0, 0, winWidth, winHeight);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         contentPane.setLayout(null);
         addKeyListener(this);
                 
-        level=1;
+        isPaused=false;
         
         //Empieza el tiempo
         ticks=0;
-        time=new Timer(100,this);
+        time=new Timer(40,this);
         
         //Empieza el campo
         field=new TetrisField();
         contentPane.add(field);
+        //Contadores
+        contentPane.add(field.stats);
         
         //Barra de Menus
         bar=new JMenuBar();
@@ -57,6 +57,18 @@ public class Tetris extends JFrame implements KeyListener,ActionListener{
         setJMenuBar(bar);
         
         time.start();
+        field.parent=this;
+    }
+    
+    private void togglePause(){
+        if(isPaused==false){
+            time.stop();
+            isPaused=true;
+        }else{
+            time.start();
+            isPaused=false;
+        }
+        
     }
     
     public static void main(String[] args) {
@@ -66,42 +78,58 @@ public class Tetris extends JFrame implements KeyListener,ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-        ticks++;
-        field.update();
-        if(ticks>=10/level){
-            field.gameTick();
-            ticks=0;
+        if(ae.getSource()==time){
+            ticks++;
+            field.update();
+            if(ticks>=25/field.stats.level){
+                field.gameTick();
+                ticks=0;
+            }
+        }else if(true){
+            
         }
     }
 
         @Override
     public void keyTyped(KeyEvent ke) {
         //System.out.println(ke.getKeyChar());
-        switch(ke.getKeyChar()){
-            case 'w':
+        if(isPaused==false)
+        field.getTypo(Character.toUpperCase(ke.getKeyChar()));
+    }
+
+    @Override
+    public void keyPressed(KeyEvent ke) {
+        if(ke.getKeyCode()==78){
+            remove(field);
+            field=new TetrisField();
+            add(field);
+        }
+        if(ke.getKeyCode()==27)togglePause();
+        if(isPaused==false)
+        switch(ke.getKeyCode()){
+            case 38:
                 field.getTypo('W');
                 break;
-            case 'a':
+            case 37:
                 field.getTypo('A');
                 break;
-            case 's':
+            case 40:
                 field.getTypo('S');
                 break;
-            case 'd':
+            case 39:
                 field.getTypo('D');
                 break;
-            case ' ':
-                field.getTypo(' ');
-                break;
             default:
-                System.out.println("Otra tecla fue apretada");
+                //System.out.println(ke.getKeyCode());
                 break;
         }
     }
 
     @Override
-    public void keyPressed(KeyEvent ke) {}
-
-    @Override
     public void keyReleased(KeyEvent ke) {}
+    
+    public void gameOver(){
+        time.stop();
+        
+    }
 }
