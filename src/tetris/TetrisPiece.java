@@ -120,10 +120,6 @@ public class TetrisPiece{
     public void left(){
         xOrigin--;
     }
-    public void throwPiece(){
-        System.out.println("Aventar ^-^");
-        yOrigin++;
-    }
     public void rotate(){
         dataMtrx=generateRotatedDataMtrx();
         this.orientation++;

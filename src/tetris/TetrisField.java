@@ -1,4 +1,3 @@
-
 package tetris;
 
 import java.awt.Color;
@@ -15,7 +14,7 @@ public class TetrisField extends JPanel{
     JPanel tetrisMatrixPanel[][];
     Color tetrisMatrixColor[][];
     boolean canPlace;
-    int w,h,scale;//Matrix Dimensions
+    int w,h,scale,nextPieceType;//Matrix Dimensions
     TetrisPiece actualPiece;
         
     public TetrisField(){
@@ -25,7 +24,7 @@ public class TetrisField extends JPanel{
         //Campo Obscuro
         setLayout(null);
         setBounds(1, 2, w*scale, (h-2)*scale);
-        setBackground(Color.decode("#FF0000"));
+        setBackground(Color.decode("#FFFFFF"));
         
         //Matriz interna
         tetrisMatrixInt=new int[10][22];
@@ -47,27 +46,34 @@ public class TetrisField extends JPanel{
     private void newPiece() {
         actualPiece=new TetrisPiece((int) Math.rint(Math.random()*7),this);
         //actualPiece=new TetrisPiece(2,this);
-        System.out.println(actualPiece.typePiece);
-        System.out.println(actualPiece.color);
-        //actualPiece.xOrigin=5;
-        //actualPiece.yOrigin=5;
+        //System.out.println(actualPiece.typePiece);
+        //System.out.println(actualPiece.color);
+        nextPieceType=(int) Math.rint(Math.random()*7);
+        updatePieceData();
+    }
+    private void newPiece(int type) {
+        actualPiece=new TetrisPiece(type,this);
+        nextPieceType=(int) Math.rint(Math.random()*7);
         updatePieceData();
     }
     
     private void deletePieceData(){
         for (int i = 0; i < actualPiece.dataMtrx.length; i++) {
             for (int j = 0; j < actualPiece.dataMtrx[0].length; j++) {
-                tetrisMatrixInt[actualPiece.xOrigin+i][actualPiece.yOrigin+j]=0;
-                tetrisMatrixColor[actualPiece.xOrigin+i][actualPiece.yOrigin+j]=Color.decode("#000000");
-            }
+                if(actualPiece.dataMtrx[i][j]==1){
+                    tetrisMatrixInt[actualPiece.xOrigin+i][actualPiece.yOrigin+j]=0;
+                    tetrisMatrixColor[actualPiece.xOrigin+i][actualPiece.yOrigin+j]=Color.decode("#000000");
+                }
+            }    
         }
     }
-    
     private void updatePieceData() {
         for (int i = 0; i < actualPiece.dataMtrx.length; i++) {
             for (int j = 0; j < actualPiece.dataMtrx[0].length; j++) {
-                tetrisMatrixInt[actualPiece.xOrigin+i][actualPiece.yOrigin+j]=actualPiece.dataMtrx[i][j];
-                tetrisMatrixColor[actualPiece.xOrigin+i][actualPiece.yOrigin+j]=actualPiece.color;
+                if(actualPiece.dataMtrx[i][j]==1){
+                    tetrisMatrixInt[actualPiece.xOrigin+i][actualPiece.yOrigin+j]=actualPiece.dataMtrx[i][j];
+                    tetrisMatrixColor[actualPiece.xOrigin+i][actualPiece.yOrigin+j]=actualPiece.color;
+                }
             }
         }
     }
@@ -88,8 +94,13 @@ public class TetrisField extends JPanel{
     
     public void gameTick(){
         deletePieceData();
-        actualPiece.fall();
-        updatePieceData();
+        if(canFall()){
+            actualPiece.fall();
+            updatePieceData();
+        }else{
+            //System.out.println("GAMETICK COLLISION");
+            collision();
+        }
     }
             
     public void getTypo(char wasd){
@@ -101,46 +112,95 @@ public class TetrisField extends JPanel{
                 break;
             case 'A':
                 deletePieceData();
-                actualPiece.left();
+                if(canLeft())actualPiece.left();
                 updatePieceData();
                 break;
             case 'S':
                 deletePieceData();
-                actualPiece.fall();
-                updatePieceData();
+                if(canFall()){
+                    actualPiece.fall();
+                    updatePieceData();
+                }
                 break;
             case 'D':
                 deletePieceData();
-                actualPiece.right();
+                if(canRight())actualPiece.right();
                 updatePieceData();
                 break;
             case ' ':
                 deletePieceData();
-                actualPiece.throwPiece();
-                updatePieceData();
+                while (canFall()==true) {                    
+                    actualPiece.fall();
+                }
                 break;
             default:
-                System.out.println("Otra tecla fue apretada");
+                System.out.println("Tecla no reconocida.");
                 break;    
         }
     }
     
     private boolean canLeft(){
-        boolean result=false;
+        boolean result=true;
         for (int i = 0; i < actualPiece.dataMtrx.length; i++) {
             for (int j = 0; j < actualPiece.dataMtrx[0].length; j++) {
-                
+                int x=actualPiece.xOrigin+i;
+                int y=actualPiece.yOrigin+j;
+                if(x-1<0)result=false;
+                else if(tetrisMatrixInt[x-1][y]+actualPiece.dataMtrx[i][j]==2)result=false;
             }
         }
         return result;
     }
-
     private boolean canRight(){
-        return true;
+        boolean result=true;
+        for (int i = 0; i < actualPiece.dataMtrx.length; i++) {
+            for (int j = 0; j < actualPiece.dataMtrx[0].length; j++) {
+                int x=actualPiece.xOrigin+i;
+                int y=actualPiece.yOrigin+j;
+                if(x+1>=tetrisMatrixInt.length)result=false;
+                else if(tetrisMatrixInt[x+1][y]+actualPiece.dataMtrx[i][j]==2)result=false;
+            }
+        }
+        return result;
+    }
+    private boolean canFall() {
+        boolean result=true;
+        for (int i = 0; i < actualPiece.dataMtrx.length; i++) {
+            for (int j = 0; j < actualPiece.dataMtrx[0].length; j++) {
+                int x=actualPiece.xOrigin+i;
+                int y=actualPiece.yOrigin+j;
+                if(y+1>=tetrisMatrixInt[0].length)result=false;
+                else if(tetrisMatrixInt[x][y+1]+actualPiece.dataMtrx[i][j]==2){result=false;}
+            }
+        }
+        return result;
     }
     
-    private boolean canFall() {
+    private void collision(){
+        updatePieceData();
+        //printMtrx();
+        actualPiece=null;
         
-        return true;
+        int count=0;
+        for (int i = 0;  i < tetrisMatrixInt[0].length; i++) {
+            for (int j = 0; j < tetrisMatrixInt.length; j++) {
+                if(tetrisMatrixInt[j][i]==1)count++;
+            }
+            //System.out.println("Count ="+count);
+            if(count==tetrisMatrixInt.length)deleteLine(i);
+            count=0;
+        }
+        newPiece();
+    }
+    
+    private void deleteLine(int line){
+        System.out.println("Deleting line"+line);
+        while (line!=1) {
+            for (int k = 0; k < tetrisMatrixInt.length; k++) {
+                tetrisMatrixInt[k][line]=tetrisMatrixInt[k][line-1];
+            }
+            line--;
+        }
+        for (int i = 0; i < tetrisMatrixInt.length; i++) {tetrisMatrixInt[i][0]=0;}
     }
 }

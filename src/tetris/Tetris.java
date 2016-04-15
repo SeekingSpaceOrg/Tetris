@@ -76,7 +76,7 @@ public class Tetris extends JFrame implements KeyListener,ActionListener{
 
         @Override
     public void keyTyped(KeyEvent ke) {
-        System.out.println(ke.getKeyChar());
+        //System.out.println(ke.getKeyChar());
         switch(ke.getKeyChar()){
             case 'w':
                 field.getTypo('W');
@@ -100,10 +100,8 @@ public class Tetris extends JFrame implements KeyListener,ActionListener{
     }
 
     @Override
-    public void keyPressed(KeyEvent ke) {
-    }
+    public void keyPressed(KeyEvent ke) {}
 
     @Override
-    public void keyReleased(KeyEvent ke) {
-    }
+    public void keyReleased(KeyEvent ke) {}
 }
