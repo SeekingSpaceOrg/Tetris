@@ -39,10 +39,9 @@ public class TetrisField extends JPanel{
             tetrisMatrixPanel[i][j-2].setBorder(BorderFactory.createLineBorder(defaultColor));
             this.add(tetrisMatrixPanel[i][j-2]);
         }
-        
         //Stats
         stats=new TetrisStats();
-        
+                
         newPiece();
     }
     
@@ -139,7 +138,7 @@ public class TetrisField extends JPanel{
                 }
                 break;
             default:
-                System.out.println("Tecla no reconocida.");
+                //System.out.println("Tecla no reconocida.");
                 break;    
         }
     }

@@ -25,6 +25,7 @@ public class Tetris extends JFrame implements KeyListener,ActionListener{
     TetrisField field;
         
     public Tetris(){
+        setTitle("Tetris by David Rojas and Sergio Noriega");
         contentPane = getContentPane();
         setResizable(false);
         setBounds(0, 0, winWidth, winHeight);
@@ -51,8 +52,10 @@ public class Tetris extends JFrame implements KeyListener,ActionListener{
         bar.add(menuGame);
         
         itemNewGame=new JMenuItem("New Game");
+        itemNewGame.addActionListener(this);
         menuGame.add(itemNewGame);
         itemEnd=new JMenuItem("End");
+        itemEnd.addActionListener(this);
         menuGame.add(itemEnd);
         setJMenuBar(bar);
         
@@ -85,27 +88,25 @@ public class Tetris extends JFrame implements KeyListener,ActionListener{
                 field.gameTick();
                 ticks=0;
             }
-        }else if(true){
-            
+        }else if(ae.getActionCommand().equals("New Game")){
+            newGame();
+        }else if(ae.getActionCommand().equals("End")){
+            time.stop();
+            this.dispose();
         }
     }
 
         @Override
     public void keyTyped(KeyEvent ke) {
-        //System.out.println(ke.getKeyChar());
-        if(isPaused==false)
-        field.getTypo(Character.toUpperCase(ke.getKeyChar()));
     }
 
     @Override
     public void keyPressed(KeyEvent ke) {
         if(ke.getKeyCode()==78){
-            remove(field);
-            field=new TetrisField();
-            add(field);
+            newGame();
         }
-        if(ke.getKeyCode()==27)togglePause();
-        if(isPaused==false)
+        else if(ke.getKeyCode()==27)togglePause();
+        else if(isPaused==false){
         switch(ke.getKeyCode()){
             case 38:
                 field.getTypo('W');
@@ -123,6 +124,8 @@ public class Tetris extends JFrame implements KeyListener,ActionListener{
                 //System.out.println(ke.getKeyCode());
                 break;
         }
+        field.getTypo(Character.toUpperCase(ke.getKeyChar()));
+        }
     }
 
     @Override
@@ -130,6 +133,18 @@ public class Tetris extends JFrame implements KeyListener,ActionListener{
     
     public void gameOver(){
         time.stop();
-        
+        JOptionPane.showMessageDialog(this, "Game Over\n"
+                + "N = Nuevo Juego", "Game Over - Tetris", JOptionPane.WARNING_MESSAGE);
+    }
+    
+    public void newGame(){
+        contentPane.removeAll();
+        field=new TetrisField();
+        contentPane.repaint();
+        contentPane.add(field);
+        contentPane.add(field.stats);
+        field.parent=this;
+        isPaused=false;
+        time.start();
     }
 }
