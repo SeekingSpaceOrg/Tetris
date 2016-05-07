@@ -3,13 +3,14 @@ package tetris;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.io.Serializable;
 import javax.swing.*;
 
 /**
  *
  * @author Admin
  */
-class TetrisStats extends JPanel{
+class TetrisStats extends JPanel implements Serializable{
     
     JPanel miniPanel[][],extra;
     JLabel labels[];

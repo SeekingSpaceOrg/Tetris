@@ -2,6 +2,7 @@
 package tetris;
 
 import java.awt.*;
+import java.io.Serializable;
 
 /**
  *
@@ -9,7 +10,7 @@ import java.awt.*;
  *         Sergio
  */
 
-public class TetrisPiece{
+public class TetrisPiece implements Serializable{
     int typePiece;
     /**
     * 0=Square

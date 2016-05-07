@@ -1,6 +1,7 @@
 package tetris;
 
 import java.awt.Color;
+import java.io.Serializable;
 import javax.swing.*;
 
 /**
@@ -8,13 +9,13 @@ import javax.swing.*;
  * @author David
  *         Sergio
  */
-public class TetrisField extends JPanel{
+public class TetrisField extends JPanel implements Serializable{
     
-    int tetrisMatrixInt[][],w,h,scale,nextPieceType;
+    int tetrisMatrixInt[][],nextPieceType;
+    final int w,h,scale;
     JPanel tetrisMatrixPanel[][];
     Color tetrisMatrixColor[][],defaultColor;
-    boolean canPlace;
-    Tetris parent;
+    boolean canPlace,gameOver;
     TetrisPiece actualPiece;
     TetrisStats stats;
         
@@ -23,6 +24,7 @@ public class TetrisField extends JPanel{
         w=10;
         h=22;
         defaultColor=Color.decode("#000000");
+        gameOver=false;
         //Campo Obscuro
         setLayout(null);
         setBounds(1, 2, w*scale, (h-2)*scale);
@@ -102,7 +104,7 @@ public class TetrisField extends JPanel{
             actualPiece.fall();
             updatePieceData();
         }else{
-            if(checkGameOver())parent.gameOver();
+            if(checkGameOver())gameOver=true;
             collision();
         }
     }
